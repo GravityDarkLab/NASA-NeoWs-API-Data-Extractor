@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>NeoWs Data Fetcher</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --background-color: #f9f9f9;
+            --container-color: #ffffff;
+            --border-color: #e1e1e1;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: var(--container-color);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 15px var(--shadow-color);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        button {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        input[type="date"] {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input[type="date"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .results-container {
+            max-height: 400px; /* Adjust based on your requirements */
+            overflow-y: auto; /* Enables vertical scrolling */
+            width: 100%; /* Full width */
+            border-radius: 10px; /* Consistency in design */
+            box-shadow: 0 10px 15px var(--shadow-color); /* Shadow for elevation */
+            margin-top: 20px;
+        }
+
+        .results {
+            padding: 1rem;
+            width: 100%;
+        }
+
+        .results h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .results p {
+            font-size: 1rem;
+            line-height: 1.6;
+            word-break: break-all;
+        }
+
+        .main-wrapper {
+            width: 90%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <div class="container">
+        <input id="startDate" type="date" placeholder="Start Date"/>
+        <input id="endDate" type="date" placeholder="End Date"/>
+        <div>
+            <button onclick="navigateTo('listMaxMinDiameter')">List Max & Min Diameter</button>
+            <button onclick="navigateTo('listRelativeVelocity')">List Relative Velocity</button>
+            <button onclick="navigateTo('listMissDistance')">List Miss Distance</button>
+        </div>
+    </div>
+
+    <section class="results-container" th:if="${result}">
+        <article class="results">
+            <h2>Results:</h2>
+            <ul>
+                <li th:each="item : ${result}" th:text="${item}"></li>
+            </ul>
+        </article>
+    </section>
+
+    <script>
+        function navigateTo(endpoint) {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            window.location.href = `/${endpoint}?start_date=${startDate}&end_date=${endDate}`;
+        }
+    </script>
+</div>
+
+</body>
+
+</html>
