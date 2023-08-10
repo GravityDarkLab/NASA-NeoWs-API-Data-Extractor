@@ -1,7 +1,10 @@
 package com.darklab.asteroids.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -29,6 +32,23 @@ public class NeoWsService {
 	}
 
 	public List<String> fetchDataAndExtractInfo(String startDate, String endDate, String infoType) {
+		try {
+			// 1. Date Validation
+			if (!startDate.isEmpty() && !endDate.isEmpty()) {
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				Date parsedStartDate = dateFormat.parse(startDate);
+				Date parsedEndDate = dateFormat.parse(endDate);
+
+				long intervalMillis = parsedEndDate.getTime() - parsedStartDate.getTime();
+				long maxIntervalMillis = 7L * 24L * 60L * 60L * 1000L; // 7 days in milliseconds
+				if (intervalMillis > maxIntervalMillis) {
+					return Collections.singletonList("Date interval must be within 7 days");
+				}
+			}
+		} catch (ParseException ex) {
+			logger.error("Invalid date format. Please use yyyy-MM-dd format for dates.");
+			return Collections.singletonList("Invalid date format");
+		}
 		// 1. URL building
 		String url = UriComponentsBuilder.fromHttpUrl(BASE_URL).queryParam("start_date", startDate)
 				.queryParam("end_date", endDate).queryParam("api_key", apiKey).toUriString();
