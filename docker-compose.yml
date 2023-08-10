@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  nasa-neows-api-data-extractor: # Descriptive service name
-    container_name: nasa-neows-api-data-extractor-container # Meaningful container name
+  nasa-neows-api-data-extractor:
+    container_name: nasa-neows-api-data-extractor-container
     build:
       context: .
       dockerfile: Dockerfile
