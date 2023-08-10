@@ -2,10 +2,8 @@ package com.darklab.asteroids.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +15,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.darklab.asteroids.dto.NeoWsResponse;
 
+import io.micrometer.common.util.StringUtils;
+
 @Service
 public class NeoWsService {
+	private static final String DATE_FORMAT = "yyyy-MM-dd";
+	private static final long MAX_INTERVAL_DAYS = 7L;
 
 	@Value("${neows.api.key}")
 	private String apiKey;
@@ -69,26 +71,11 @@ public class NeoWsService {
 	 *             the date interval is more than 7 days.
 	 */
 	public List<String> fetchDataAndExtractInfo(String startDate, String endDate, String infoType) {
-		try {
-			// 1. Date Validation
-			if (!startDate.isEmpty() && !endDate.isEmpty()) {
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-				Date parsedStartDate = dateFormat.parse(startDate);
-				Date parsedEndDate = dateFormat.parse(endDate);
-
-				long intervalMillis = parsedEndDate.getTime() - parsedStartDate.getTime();
-				long maxIntervalMillis = 7L * 24L * 60L * 60L * 1000L; // 7 days in milliseconds
-				if (intervalMillis > maxIntervalMillis) {
-					return Collections.singletonList("Date interval must be within 7 days");
-				}
-			}
-		} catch (ParseException ex) {
-			logger.error("Invalid date format. Please use yyyy-MM-dd format for dates.");
+		if (!isValidDateRange(startDate, endDate)) {
 			return Collections.singletonList("Invalid date format");
 		}
 		// 1. URL building
-		String url = UriComponentsBuilder.fromHttpUrl(BASE_URL).queryParam("start_date", startDate)
-				.queryParam("end_date", endDate).queryParam("api_key", apiKey).toUriString();
+		String url = buildUrl(startDate, endDate);
 		try {
 			// 2. Fetch data
 			NeoWsResponse response = restTemplate.getForObject(url, NeoWsResponse.class);
@@ -128,6 +115,151 @@ public class NeoWsService {
 					ex.getMessage());
 			return Collections.singletonList("Error fetching data");
 		}
+	}
+
+	/**
+	 * Fetches data related to near-earth objects for the specified date range from
+	 * the NeoWs service and extracts specified information based on the given info
+	 * type.
+	 *
+	 * <p>
+	 * This method performs the following operations:
+	 * </p>
+	 *
+	 * <ul>
+	 * <li>Validates the provided date range before making the request.</li>
+	 * <li>Constructs the appropriate URL for the NeoWs service.</li>
+	 * <li>Fetches the near-earth objects data from the NeoWs service for the
+	 * specified date range.</li>
+	 * <li>Logs received data for debugging and traceability.</li>
+	 * <li>Based on the provided info type, extracts and returns the relevant data:
+	 * <ul>
+	 * <li>"maxMinDiameter": Extracts and returns the maximum and minimum diameter
+	 * of the asteroids.</li>
+	 * <li>"relativeVelocity": Extracts and returns the relative velocities of the
+	 * asteroids.</li>
+	 * <li>"missDistances": Extracts and returns the miss distances of the
+	 * asteroids.</li>
+	 * </ul>
+	 * </li>
+	 * </ul>
+	 *
+	 * <p>
+	 * If any error occurs during the fetch operation, such as a
+	 * RestClientException, the error is logged and an empty optional is returned.
+	 * Similarly, if the response from NeoWs is null or incomplete, the method
+	 * returns an empty optional.
+	 * </p>
+	 *
+	 * @param startDate
+	 *            The start date of the range for which data needs to be fetched, in
+	 *            "YYYY-MM-DD" format.
+	 * @param endDate
+	 *            The end date of the range for which data needs to be fetched, in
+	 *            "YYYY-MM-DD" format.
+	 * @param infoType
+	 *            The type of information to extract. Acceptable values are
+	 *            "maxMinDiameter", "relativeVelocity", and "missDistances".
+	 * @return An {@link Optional} containing the extracted information. If no data
+	 *         can be extracted or an error occurs, returns an empty
+	 *         {@link Optional}.
+	 */
+	public Optional<Object> fetchDataAndExtractInfoJson(String startDate, String endDate, String infoType) {
+		if (!isValidDateRange(startDate, endDate)) {
+			return Optional.empty();
+		}
+
+		String url = buildUrl(startDate, endDate);
+
+		try {
+			NeoWsResponse response = restTemplate.getForObject(url, NeoWsResponse.class);
+
+			if (response == null || response.getNear_earth_objects() == null) {
+				logger.error("No data received from NeoWs for date range {} to {}", startDate, endDate);
+				return Optional.empty();
+			}
+
+			logReceivedData(response);
+
+			switch (infoType) {
+				case "maxMinDiameter" :
+					Object extractedInfo = Utils.extractMaxMinDiameterJson(response);
+					logger.info("Fetched max and min diameter data for date range {} to {}: {}", startDate, endDate,
+							extractedInfo);
+					return Optional.of(extractedInfo);
+				case "relativeVelocity" :
+					extractedInfo = Utils.extractRelativeVelocityJson(response);
+					logger.info("Fetched relative Velocity of asteroids data for date range {} to {}: {}", startDate,
+							endDate, extractedInfo);
+					return Optional.of(extractedInfo);
+				case "missDistances" :
+					extractedInfo = Utils.extractMissDistancesJson(response);
+					logger.info("Fetched relative Velocity of asteroids data for date range {} to {}: {}", startDate,
+							endDate, extractedInfo);
+					return Optional.of(extractedInfo);
+				default :
+					return Optional.empty();
+			}
+
+		} catch (RestClientException ex) {
+			logger.error("Error fetching data from NeoWs for date range {} to {}. Error: {}", startDate, endDate,
+					ex.getMessage());
+			return Optional.empty();
+		}
+	}
+
+	private boolean isValidDateRange(String startDate, String endDate) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+		Date parsedStartDate = new Date();
+		Date parsedEndDate = new Date();
+
+		if (StringUtils.isEmpty(startDate) && StringUtils.isEmpty(endDate)) {
+			return true;
+		} else if (StringUtils.isEmpty(startDate)) {
+			try {
+				parsedEndDate = dateFormat.parse(endDate);
+				parsedStartDate = parsedEndDate; // Set startDate to endDate
+			} catch (ParseException ex) {
+				logger.error("Invalid end date format '{}'. Please use {} format for dates.", endDate, DATE_FORMAT);
+				return false;
+			}
+		} else if (StringUtils.isEmpty(endDate)) {
+			try {
+				parsedStartDate = dateFormat.parse(startDate);
+				parsedEndDate = parsedStartDate; // Set endDate to startDate
+			} catch (ParseException ex) {
+				logger.error("Invalid start date format '{}'. Please use {} format for dates.", startDate, DATE_FORMAT);
+				return false;
+			}
+		} else {
+			try {
+				parsedStartDate = dateFormat.parse(startDate);
+				parsedEndDate = dateFormat.parse(endDate);
+			} catch (ParseException ex) {
+				logger.error("Invalid date format for '{}' or '{}'. Please use {} format for dates.", startDate,
+						endDate, DATE_FORMAT);
+				return false;
+			}
+		}
+
+		long intervalMillis = parsedEndDate.getTime() - parsedStartDate.getTime();
+		long maxIntervalMillis = TimeUnit.DAYS.toMillis(MAX_INTERVAL_DAYS);
+
+		if (intervalMillis < 0 || intervalMillis > maxIntervalMillis) {
+			logger.error("Date interval must be within 0 to {} days", MAX_INTERVAL_DAYS);
+			return false;
+		}
+
+		return true;
+	}
+
+	private String buildUrl(String startDate, String endDate) {
+		return UriComponentsBuilder.fromHttpUrl(BASE_URL).queryParam("start_date", startDate)
+				.queryParam("end_date", endDate).queryParam("api_key", apiKey).toUriString();
+	}
+
+	private void logReceivedData(NeoWsResponse response) {
+		response.getNear_earth_objects().keySet().forEach(date -> logger.debug("Received data for date: {}", date));
 	}
 
 }
