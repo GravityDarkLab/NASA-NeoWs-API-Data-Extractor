@@ -9,6 +9,7 @@ This project interacts with NASA's NeoWs (Near Earth Object Web Service) API to 
 - Displays the relative velocities of asteroids.
 - Showcases the miss distances of asteroids.
 - Provides a web interface for users to interactively view asteroid data.
+- Docker support for easy deployment.
 
 ## Getting Started
 
@@ -16,6 +17,7 @@ This project interacts with NASA's NeoWs (Near Earth Object Web Service) API to 
 
 - Java 11 or newer
 - Maven
+- Docker (if deploying using Docker)
 - A valid NASA API key. Get it from [NASA's API portal](https://api.nasa.gov/)
 
 ### Installation
@@ -24,6 +26,26 @@ This project interacts with NASA's NeoWs (Near Earth Object Web Service) API to 
 git clone https://github.com/GravityDarkLab/asteroids.git
 cd nasa-neows-extractor
 mvn clean install
+```
+
+## Using Docker Compose
+
+1. Build and start the application:
+
+```bash
+docker-compose up --build
+```
+
+This command will build the Docker image using the configurations provided in `docker-compose.yml` and then run the container.
+
+Now, you can access the application at `http://localhost:8080/`.
+
+2. Stop the application:
+
+If you wish to stop the application and the associated container, you can use:
+
+```bash
+docker-compose down
 ```
 
 ## Usage
