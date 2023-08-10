@@ -25,27 +25,25 @@ public class NeoWsController {
 	@GetMapping("/listMaxMinDiameter")
 	public ModelAndView listMaxMinDiameter(@RequestParam String start_date, @RequestParam String end_date) {
 		List<String> result = neoWsService.fetchDataAndExtractInfo(start_date, end_date, "maxMinDiameter");
-
 		ModelAndView modelAndView = new ModelAndView("index");
 		modelAndView.addObject("result", result);
 
 		return modelAndView;
 	}
+
 	@GetMapping("/listRelativeVelocity")
 	public ModelAndView listRelativeVelocity(@RequestParam String start_date, @RequestParam String end_date) {
 		List<String> result = neoWsService.fetchDataAndExtractInfo(start_date, end_date, "relativeVelocity");
-
 		ModelAndView modelAndView = new ModelAndView("index");
 		modelAndView.addObject("result", result);
-
 		return modelAndView;
 	}
+
 	@GetMapping("/listMissDistance")
 	public ModelAndView listMissDistance(@RequestParam String start_date, @RequestParam String end_date) {
 		List<String> result = neoWsService.fetchDataAndExtractInfo(start_date, end_date, "missDistances");
 		ModelAndView modelAndView = new ModelAndView("index");
 		modelAndView.addObject("result", result);
-
 		return modelAndView;
 	}
 

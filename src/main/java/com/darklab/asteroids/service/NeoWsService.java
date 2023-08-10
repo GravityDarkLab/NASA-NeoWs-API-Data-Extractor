@@ -31,6 +31,43 @@ public class NeoWsService {
 		this.restTemplate = new RestTemplate();
 	}
 
+	/**
+	 * Fetches asteroid data from NeoWs API for a specified date range and extracts
+	 * information based on a given info type.
+	 * <p>
+	 * The method uses the given date range to query the NeoWs API for asteroid
+	 * data. The info type parameter determines what kind of information should be
+	 * extracted from the fetched data:
+	 * <ul>
+	 * <li>maxMinDiameter: Extracts and returns the maximum and minimum diameter of
+	 * asteroids.</li>
+	 * <li>relativeVelocity: Extracts and returns the relative velocities of
+	 * asteroids.</li>
+	 * <li>missDistances: Extracts and returns the miss distances of asteroids.</li>
+	 * </ul>
+	 * If the info type is not recognized, it returns a list containing the string
+	 * "Invalid info type".
+	 * </p>
+	 * <p>
+	 * The method performs date validation to ensure that the date interval is
+	 * within 7 days. If the date format is invalid, or if there is an error in
+	 * fetching data from the API, an appropriate error message is returned in the
+	 * list.
+	 * </p>
+	 *
+	 * @param startDate
+	 *            The start date of the date range in the format "yyyy-MM-dd".
+	 * @param endDate
+	 *            The end date of the date range in the format "yyyy-MM-dd".
+	 * @param infoType
+	 *            The type of information to be extracted. Can be "maxMinDiameter",
+	 *            "relativeVelocity", or "missDistances".
+	 * @return A list of strings containing the extracted information. In case of
+	 *         errors, the list contains a relevant error message.
+	 * @throws IllegalArgumentException
+	 *             if the startDate or endDate is not in the expected format, or if
+	 *             the date interval is more than 7 days.
+	 */
 	public List<String> fetchDataAndExtractInfo(String startDate, String endDate, String infoType) {
 		try {
 			// 1. Date Validation
