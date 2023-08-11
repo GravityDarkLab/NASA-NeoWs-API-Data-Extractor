@@ -1,6 +1,6 @@
 # NASA NeoWs API Data Extractor Dashboard
 
-This project visualizes data fetched from .... , showing information about asteroids, their relative velocities, miss distances, and estimated diameters.
+This project visualizes data fetched from [NASA-NeoWs-API-Data-Extractor](https://github.com/GravityDarkLab/NASA-NeoWs-API-Data-Extractor) , showing information about asteroids, their relative velocities, miss distances, and estimated diameters.
 
 ## Prerequisites
 
@@ -13,24 +13,28 @@ Before you begin, ensure you have met the following requirements:
 1. **Clone the repository**:
 
    ```bash
-   git clone [YOUR REPOSITORY URL]
-   cd [YOUR REPOSITORY DIRECTORY]
+   git clone https://github.com/GravityDarkLab/asteroids.git
+   cd nasa-neows-extractor
    ```
 
-2. **Create and activate a Conda environment**:
+2. **Run the server**:
+
+   - Download the server from [here](https://drive.google.com/drive/folders/1EazGOFSEMiiH5TRHsR7EyJZPu8RAqT2r?usp=sharing) and follow the provided instructions.
+   - Optional: Follow the steps [here](https://github.com/GravityDarkLab/NASA-NeoWs-API-Data-Extractor).
+     
+3. **Create and activate a Conda environment**:
 
    ```bash
    conda create --name neows-env python=3.8
    conda activate neows-env
    ```
-
-3. **Install the required packages**:
+4. **Install the required packages**:
 
    ```bash
    pip install -r requirements.txt
    ```
-
-4. **Set up the Flask environment variables**:
+   
+5. **Set up the Flask environment variables**:
 
    On **Windows**:
 
@@ -46,13 +50,13 @@ Before you begin, ensure you have met the following requirements:
    export FLASK_ENV=development
    ```
 
-5. **Run the Flask application**:
+6. **Run the Flask application**:
 
    ```bash
    flask run
    ```
 
-6. Open a web browser and navigate to `http://127.0.0.1:5000/` to view the application.
+7. Open a web browser and navigate to `http://127.0.0.1:5000/` to view the application.
 
 ## Usage
 
@@ -62,10 +66,4 @@ Before you begin, ensure you have met the following requirements:
 
 ## License
 
-This project is licensed under the MIT License.
-
----
-
-Again, make sure to replace `[YOUR REPOSITORY URL]` and `[YOUR REPOSITORY DIRECTORY]` with the appropriate values related to your project.
-
-With this, your `README.md` provides a clear guide for users on how to set up and run your project locally using Conda.
+This project is licensed under the Apache License.
