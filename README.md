@@ -19,6 +19,7 @@ This project interacts with NASA's NeoWs (Near Earth Object Web Service) API to 
 - Maven
 - Docker (if deploying using Docker)
 - A valid NASA API key. Get it from [NASA's API portal](https://api.nasa.gov/)
+- Python 3.8
 
 ### Installation
 
@@ -87,6 +88,11 @@ The application comes with an intuitive web interface that allows users to:
 
 - **Select Date Range:** Specify the start and end date to fetch asteroid data.
 - **View Data:** Displays the fetched asteroid data in a structured format.
+
+## Visualizing Data with the Python Dashboard:
+I also offer a dashboard that allows you to visualize the fetched data in a graphical format. This dashboard provides a more intuitive and interactive way to understand and analyze the data from the NASA NeoWs API.
+
+For detailed instructions on setting up and using the dashboard, please visit this [link](https://github.com/GravityDarkLab/NASA-NeoWs-API-Data-Extractor/tree/main/dashboard-py).
 
 ## API Reference
 
