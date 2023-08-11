@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroid Data Plotter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Asteroid Data Plotter</h1>
+        <form action="/plot" method="post">
+            <label for="start_date">Start Date (YYYY-MM-DD):</label>
+            <input type="date" id="start_date" name="start_date">
+            <label for="end_date">End Date (YYYY-MM-DD):</label>
+            <input type="date" id="end_date" name="end_date">
+            <input type="submit" value="Submit">
+        </form>
+        {% if plot_url %}
+        <img src="{{ plot_url }}" alt="Asteroid Data Plots">
+        {% endif %}
+    </div>
+</body>
+
+</html>
