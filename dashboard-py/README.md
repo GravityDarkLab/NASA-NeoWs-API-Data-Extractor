@@ -66,4 +66,4 @@ Before you begin, ensure you have met the following requirements:
 
 ## License
 
-This project is licensed under the Apache License.
+This project is licensed under the MIT License.
