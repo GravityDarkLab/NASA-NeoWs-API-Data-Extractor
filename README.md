@@ -100,4 +100,4 @@ This project utilizes the [NASA's NeoWs API](https://api.nasa.gov/).
 
 ## License
 
-Distributed under the Apache License. See `LICENSE` for more information.
+Distributed under the MIT License. See `LICENSE` for more information.
