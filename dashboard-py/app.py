@@ -44,7 +44,7 @@ def plot_diameter_range(ax, data):
     min_diameter = data['estimated_diameter_min']
     max_diameter = data['estimated_diameter_max']
 
-    # Use a logarithmic scale for the y-axis
+    # Using logarithmic scale for y-axis for better visualization
     ax.set_yscale('log')
 
     # Adjust the bars to account for the logarithmic scale
@@ -59,8 +59,8 @@ def plot_diameter_range(ax, data):
     ax.set_xlim(-1, 1)
     ax.set_xticks([])
 
-    # Setting the y-axis limit ensures that even very small values are clearly visible
-    ax.set_ylim(bottom=0.001)  # Adjust as needed based on your data
+    # Ensure small values are visible
+    ax.set_ylim(bottom=0.001)
 
 
 def plot_all_data(start_date, end_date):
