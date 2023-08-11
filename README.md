@@ -17,7 +17,7 @@ This project interacts with NASA's NeoWs (Near Earth Object Web Service) API to 
 
 - Java 11 or newer
 - Maven
-- Docker (if deploying using Docker)
+- Docker
 - A valid NASA API key. Get it from [NASA's API portal](https://api.nasa.gov/)
 - Python 3.8
 
