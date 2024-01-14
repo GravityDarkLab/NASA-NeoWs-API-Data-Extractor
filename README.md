@@ -1,5 +1,7 @@
 # NASA NeoWs API Data Extractor
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/81854b0a180b4b0eae7c5d33e58dd2cf)](https://app.codacy.com/gh/GravityDarkLab/NASA-NeoWs-API-Data-Extractor?utm_source=github.com&utm_medium=referral&utm_content=GravityDarkLab/NASA-NeoWs-API-Data-Extractor&utm_campaign=Badge_Grade)
+
 This project interacts with NASA's NeoWs (Near Earth Object Web Service) API to fetch and extract information about Near-Earth Objects. It provides users with insights into asteroids based on their diameter, relative velocity, and miss distances and showcases this data via a user-friendly interface.
 
 ## Features
